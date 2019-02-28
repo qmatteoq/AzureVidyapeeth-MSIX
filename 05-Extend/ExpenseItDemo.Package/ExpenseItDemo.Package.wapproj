@@ -46,12 +46,12 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>ExpenseItDemo.Package_TemporaryKey.pfx</PackageCertificateKeyFile>
     <EntryPointProjectUniqueName>..\ExpenseItDemo\ExpenseItDemo.csproj</EntryPointProjectUniqueName>
+    <PackageCertificateThumbprint>CD3B365A385496EF081952FBFA96D23AE562D8DA</PackageCertificateThumbprint>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="ExpenseItDemo.Package_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\LargeTile.scale-100.png" />
@@ -94,6 +94,7 @@
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <None Include="ExpenseItDemo.Package_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExpenseItDemo\ExpenseItDemo.csproj" />
