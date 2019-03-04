@@ -101,7 +101,7 @@ namespace ExpenseItDemo
             doc.LoadXml(xml);
 
             ToastNotification toast = new ToastNotification(doc);
-            ToastNotificationManager.CreateToastNotifier().Show(toast);
+            ToastNotificationManager.CreateToastNotifier().Show(toast);            
         }
 
         public void UpdateTile(string employee, double total)
