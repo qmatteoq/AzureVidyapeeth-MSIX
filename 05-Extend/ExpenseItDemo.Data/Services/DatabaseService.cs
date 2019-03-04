@@ -1,21 +1,24 @@
 ﻿using ExpenseItDemo.Data.Model;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Data.OleDb;
 
 namespace ExpenseItDemo.Data.Services
 {
     public class DatabaseService
     {
-        private SqlConnection connection;
+        private OleDbConnection connection;
         public DatabaseService()
-        {          
-            connection = new SqlConnection();
-            connection.ConnectionString = $"Server=tcp:wpc2017.database.windows.net,1433;Initial Catalog=wpc2017;Persist Security Info=False;User ID=qmatteoq;Password=wpc2017!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        {
+            connection = new OleDbConnection();
+            string location = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            int index = location.LastIndexOf("\\");
+            string path = $"{location.Substring(0, index)}\\Expenses.mdb";
+            connection.ConnectionString = $"Provider = Microsoft.Jet.Oledb.4.0; Data Source = {path}";
         }
 
         public List<Employee> GetEmployees()
         {
-            SqlCommand command = new SqlCommand();
+            OleDbCommand command = new OleDbCommand();
             if (connection.State != System.Data.ConnectionState.Open)
             {
                 connection.Open();
@@ -25,7 +28,7 @@ namespace ExpenseItDemo.Data.Services
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM Employees";
-            using (SqlDataReader reader = command.ExecuteReader())
+            using (OleDbDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -47,7 +50,7 @@ namespace ExpenseItDemo.Data.Services
 
         public Employee GetEmployeeById(int employeeId)
         {
-            SqlCommand command = new SqlCommand();
+            OleDbCommand command = new OleDbCommand();
             if (connection.State != System.Data.ConnectionState.Open)
             {
                 connection.Open();
@@ -58,7 +61,7 @@ namespace ExpenseItDemo.Data.Services
             command.Connection = connection;
             command.CommandText = "SELECT * FROM Employees WHERE Id=@EmployeeId";
             command.Parameters.AddWithValue("EmployeeId", employeeId);
-            using (SqlDataReader reader = command.ExecuteReader())
+            using (OleDbDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -79,18 +82,18 @@ namespace ExpenseItDemo.Data.Services
 
         public List<Employee> GetEmployeesByType(string type)
         {
-            SqlCommand command = new SqlCommand();
+            OleDbCommand command = new OleDbCommand();
             if (connection.State != System.Data.ConnectionState.Open)
             {
                 connection.Open();
             }
-            
+
             List<Employee> employees = new List<Employee>();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM Employees WHERE Type=@Type";
             command.Parameters.AddWithValue("Type", type);
-            using (SqlDataReader reader = command.ExecuteReader())
+            using (OleDbDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -113,7 +116,7 @@ namespace ExpenseItDemo.Data.Services
 
         public List<Expense> GetExpensesByEmployee(int employeeId)
         {
-            SqlCommand command = new SqlCommand();
+            OleDbCommand command = new OleDbCommand();
             if (connection.State != System.Data.ConnectionState.Open)
             {
                 connection.Open();
@@ -124,7 +127,7 @@ namespace ExpenseItDemo.Data.Services
             command.Connection = connection;
             command.CommandText = "SELECT * FROM Expenses WHERE EmployeeId=@EmployeeId";
             command.Parameters.AddWithValue("EmployeeId", employeeId);
-            using (SqlDataReader reader = command.ExecuteReader())
+            using (OleDbDataReader reader = command.ExecuteReader())
             {
                 while (reader.Read())
                 {
@@ -132,7 +135,7 @@ namespace ExpenseItDemo.Data.Services
                     expense.ExpenseId = reader.GetInt32(0);
                     expense.Type = reader.GetString(1);
                     expense.Description = reader.GetString(2);
-                    expense.Cost = (double)reader.GetDecimal(3);
+                    expense.Cost = reader.GetDouble(3);
                     expense.EmployeeId = employeeId;
 
                     expenses.Add(expense);
